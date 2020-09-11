@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <h:outputScript library="js" name="bootstrap.js" />
+        <title>Is</title>
+    </h:head>
+    <h:body >
+
+        <ui:composition template="/template/common-layout.xhtml">
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        
+                        <c:if test="#{kisiController.isVeren()}">
+                            <div class="col-md-6" >
+                                <h:form id="ajax-form">
+                                    <div class="form-group">
+                                        <h:inputHidden value="#{isController.is.id}"/>
+                                        <label for="inputName">Is Adi</label>
+                                        <h:inputText styleClass="form-control" value="#{isController.is.baslik}"/> <br/>
+
+<!--                                        <label for="inputName">Aciklama</label>
+                                        <h:inputText styleClass="form-control" value="#{isController.is.aciklama}"/> <br/>-->
+
+                                        <!--<label for="inputName">Kisi</label>-->
+                                        <h:selectOneMenu rendered="false" styleClass="custom-select" value="#{isController.is.kisi}" converter="kisiConverter">
+                                            <f:selectItem value="#{kisiController.currentUser()}"  />                                        </h:selectOneMenu>
+                                        <!--<label for="inputName">Basvuru</label>-->
+                                        <h:selectManyMenu rendered="false" styleClass="custom-select" value="#{isController.is.basvuru}" converter="basvuruConverter">
+                                            <f:selectItems value="#{basvuruController.getaList()}" var="basvuru" itemValue="#{basvuru}" itemLabel="#{basvuru.aciklama}"/>
+                                        </h:selectManyMenu>
+                                    </div>
+                                    <div class="form-group">
+                                        <h:commandButton styleClass="btn btn-primary" rendered="#{isController.is.id!=0}" value="Update" action="#{isController.update}">
+                                            <f:ajax execute="ajax-form" render="template-form"/>
+                                        </h:commandButton>
+
+                                        <h:commandButton styleClass="btn btn-primary" rendered="#{isController.is.id==0}" value="Create" action="#{isController.isCreate}">
+                                            <f:ajax execute="ajax-form" render="template-form"/>
+                                        </h:commandButton>
+
+                                        <h:commandButton styleClass="btn btn-secondary" rendered="#{isController.is.id!=0}" value="Clear" action="#{isController.clearForm}">  
+                                            <f:ajax execute="ajax-form" render="template-form"/>
+                                        </h:commandButton>
+                                    </div>
+                                </h:form>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div class="row">
+                        <c:if test="#{kisiController.isAlan()}">
+
+                            <div class="col-md-6">
+
+                                <h:form id="ajax-table">
+                                    <div id="search-panel">
+                                        <h:inputText autocomplete="off" value="#{isController.searchField}">
+                                            <f:passThroughAttribute name="placeHolder" value="Search ..."/>
+                                            <f:ajax event="keyup" listener="#{isController.getaList()}" execute="@this" render="template-form:ajax-table:data-table" />
+                                        </h:inputText>
+
+                                        <h:commandButton action="#{isController.previous}" value="Previous" styleClass="btn btn-outline-dark">
+                                            <f:ajax execute="@this" render="template-form"/>
+                                        </h:commandButton>
+                                        <h:outputLabel  value="#{isController.page} of #{isController.pageCount}" styleClass="text textArea"/>
+                                        <h:commandButton action="#{isController.next}" value="Next" styleClass="btn btn-outline-dark">
+                                            <f:ajax execute="@this" render="template-form"/>
+                                        </h:commandButton>
+                                    </div>
+
+<!--                                    <h:inputText value="#{isController.aciklama}">
+                                        <f:passThroughAttribute name="placeHolder" value="Basvuru Aciklamasi ..."/>
+                                    </h:inputText>-->
+                                    <h:dataTable  id="data-table" value="#{isController.getaList()}" var="aIs" styleClass="table table-stripped">
+                                        <h:column>
+                                            <f:facet name="header">ID</f:facet>
+                                                #{aIs.id}
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">Baslik</f:facet>
+                                            <h:commandLink action="#{isController.updateForm(aIs)}" value="#{aIs.baslik}" >
+                                                <f:ajax execute="@this" render="template-form:ajax-form"/>
+                                            </h:commandLink>
+
+                                        </h:column>
+                                        <h:column>
+                                            #{aIs.kisi.kullaniciAdi}
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">Is</f:facet>
+                                                #{aIs.aciklama}
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">Basvuru</f:facet>
+                                            <ui:repeat value="#{aIs.basvuru}" var="basvuru">
+                                                <ul>
+                                                    <li>#{basvuru.aciklama}</li>
+                                                </ul>
+                                            </ui:repeat>
+                                        </h:column>
+                                        <h:column>
+
+                                            <!--<f:facet name="header">DELETE</f:facet>-->
+                                            <f:facet name="header">Basvur</f:facet>
+                                           <!--<h:form id ="basvur-div">-->
+                                           <div id="bas">
+                                    <h:inputText value="#{isController.aciklama}">
+                                        <f:passThroughAttribute name="placeHolder" value="Basvuru Aciklamasi ..."/>
+                                    </h:inputText>
+                                            <h:commandButton styleClass="btn btn-outline-dark" action="#{isController.basvur(aIs)}" value="Basvur" >
+                                                <f:ajax execute="template-form:ajax-table:data-table:bas" render="template-form"/>
+                                            </h:commandButton>
+                                               <!--</h:form>--></div>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:form>
+                            </div>
+
+                        </c:if>
+
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>
+

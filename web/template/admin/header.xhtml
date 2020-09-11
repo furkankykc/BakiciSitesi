@@ -1,0 +1,47 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+
+        <ui:composition>
+            <nav class="navbar navbar-light  bg-info">
+                <a class="navbar-brand" href="/BakiciSitesi/faces/index.xhtml">
+                    Bakici Sitesi
+                </a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/il/il.xhtml">Il</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/adres/adres.xhtml">Adres</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/basvuru/basvuru.xhtml">Basvuru</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/cv/cv.xhtml">Cv</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/is/is.xhtml">Is</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/yorum/yorum.xhtml">Yorum</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/referans/referans.xhtml">Referans</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/dosya/dosya.xhtml">Dosya</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/grup/grup.xhtml">Grup</a>
+                <a  class="navbar-brand" immediate="true" href="/BakiciSitesi/faces/admin/kisi/kisi.xhtml">Kisi</a>
+                <c:if test="#{!kisiController.isLoggedin()}">
+                    <a class="navbar-right" immediate="true" href="/BakiciSitesi/faces/admin/login.xhtml" >
+                        Login
+                    </a>                
+                </c:if>
+                <c:if test="#{kisiController.type}">
+                    <a class="navbar-right">
+                        <h:commandLink immediate="true" action="#{kisiController.site()}" value="Site"/>
+
+                    </a>
+                </c:if>
+                <c:if test="#{kisiController.isLoggedin()}">
+                    <a class="navbar-right">
+                    #{session.getAttribute("userid")}
+                        <h:commandLink immediate="true" action="#{kisiController.logout()}" value="Logout"/>
+
+                    </a>
+                </c:if>
+            </nav>
+        </ui:composition>
+    </body>
+</html>

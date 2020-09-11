@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <h:outputScript library="js" name="bootstrap.js" />
+        <title>Adres</title>
+    </h:head>
+    <h:body >
+
+        <ui:composition template="/template/layout.xhtml">
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h:form id="ajax-table">
+
+                                <div id="search-panel">
+                                    <h:inputText autocomplete="off" value="#{adresController.searchField}">
+                                        <f:passThroughAttribute name="placeHolder" value="Search ..."/>
+                                        <f:ajax event="keyup" listener="#{adresController.getaList()}" execute="@this" render="template-form:ajax-table:data-table" />
+                                    </h:inputText>
+
+                                    <h:commandButton action="#{adresController.previous}" value="Previous" styleClass="btn btn-outline-dark">
+                                        <f:ajax execute="@this" render="template-form"/>
+                                    </h:commandButton>
+                                    <h:outputLabel  value="#{adresController.page} of #{adresController.pageCount}" styleClass="text textArea"/>
+                                    <h:commandButton action="#{adresController.next}" value="Next" styleClass="btn btn-outline-dark">
+                                        <f:ajax execute="@this" render="template-form"/>
+                                    </h:commandButton>
+                                </div>
+                                <h:dataTable  id="data-table" value="#{adresController.getaList()}" var="aAdres" styleClass="table table-stripped">
+                                    <h:column>
+                                        <f:facet name="header">ID</f:facet>
+                                            #{aAdres.id}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">ADİ</f:facet>
+                                        <h:commandLink action="#{adresController.updateForm(aAdres)}" value="#{aAdres.adi}" >
+                                            <f:ajax execute="@this" render="template-form:ajax-form"/>
+                                        </h:commandLink>
+
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Il</f:facet>
+                                            #{aAdres.il.adi}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Adres</f:facet>
+                                            #{aAdres.adres}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Yol Tarifi</f:facet>
+                                            #{aAdres.yolTarifi}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">DELETE</f:facet>
+
+                                        <h:commandButton styleClass="btn btn-danger" action="#{adresController.delete(aAdres)}" value="Delete" >
+                                        </h:commandButton>
+                                    </h:column>
+                                </h:dataTable>
+                            </h:form>
+                        </div>
+
+
+                        <div class="col-md-6" >
+                            <h:form id="ajax-form">
+                                <div class="form-group">
+                                    <h:inputHidden value="#{adresController.adres.id}"/>
+                                    <label for="inputName">Adres Adi</label>
+                                    <h:inputText styleClass="form-control" value="#{adresController.adres.adi}"/> <br/>
+                                    
+                                <label for="inputName">Adres</label>
+                                <h:inputText styleClass="form-control" value="#{adresController.adres.adres}"/> <br/>
+                                    <label for="inputName">Yol Tarifi</label>
+                                    <h:inputText styleClass="form-control" value="#{adresController.adres.yolTarifi}"/> <br/>
+                            
+                                <label for="inputName">Il</label>
+                                <h:selectOneMenu styleClass="custom-select" value="#{adresController.adres.il}" converter="ilConverter">
+                                    <f:selectItems value="#{ilController.getaList()}" var="il" itemValue="#{il}" itemLabel="#{il.adi}"/>
+                                </h:selectOneMenu>
+                                    </div>
+                                <div class="form-group">
+                                    <h:commandButton styleClass="btn btn-primary" rendered="#{adresController.adres.id!=0}" value="Update" action="#{adresController.update}">
+                                        <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+
+                                    <h:commandButton styleClass="btn btn-primary" rendered="#{adresController.adres.id==0}" value="Create" action="#{adresController.create}">  
+                                            <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+
+                                    <h:commandButton styleClass="btn btn-secondary" rendered="#{adresController.adres.id!=0}" value="Clear" action="#{adresController.clearForm}">  
+                                        <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:form>
+                        </div>
+
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>
+

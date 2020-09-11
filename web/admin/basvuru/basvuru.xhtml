@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <h:outputScript library="js" name="bootstrap.js" />
+        <title>Basvuru</title>
+    </h:head>
+    <h:body >
+
+        <ui:composition template="/template/layout.xhtml">
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h:form id="ajax-table">
+
+                                <div id="search-panel">
+                                    <h:inputText autocomplete="off" value="#{basvuruController.searchField}">
+                                        <f:passThroughAttribute name="placeHolder" value="Search ..."/>
+                                        <f:ajax event="keyup" listener="#{basvuruController.getaList()}" execute="@this" render="template-form:ajax-table:data-table" />
+                                    </h:inputText>
+
+                                    <h:commandButton action="#{basvuruController.previous}" value="Previous" styleClass="btn btn-outline-dark">
+                                        <f:ajax execute="@this" render="template-form"/>
+                                    </h:commandButton>
+                                    <h:outputLabel  value="#{basvuruController.page} of #{basvuruController.pageCount}" styleClass="text textArea"/>
+                                    <h:commandButton action="#{basvuruController.next}" value="Next" styleClass="btn btn-outline-dark">
+                                        <f:ajax execute="@this" render="template-form"/>
+                                    </h:commandButton>
+                                </div>
+                                <h:dataTable  id="data-table" value="#{basvuruController.getaList()}" var="aBasvuru" styleClass="table table-stripped">
+                                    <h:column>
+                                        <f:facet name="header">ID</f:facet>
+                                            #{aBasvuru.id}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Aciklama</f:facet>
+                                        <h:commandLink action="#{basvuruController.updateForm(aBasvuru)}" value="#{aBasvuru.aciklama}" >
+                                            <f:ajax execute="@this" render="template-form:ajax-form"/>
+                                        </h:commandLink>
+
+                                    </h:column>
+                                      <h:column>
+                                        <f:facet name="header">Kisi</f:facet>
+                                            #{aBasvuru.kisi.kullaniciAdi}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">DELETE</f:facet>
+
+                                        <h:commandButton styleClass="btn btn-danger" action="#{basvuruController.delete(aBasvuru)}" value="Delete" >
+                                        </h:commandButton>
+                                    </h:column>
+                                </h:dataTable>
+                            </h:form>
+                        </div>
+
+
+                        <div class="col-md-6" >
+                            <h:form id="ajax-form">
+                                <div class="form-group">
+                                    <h:inputHidden value="#{basvuruController.basvuru.id}"/>
+                                    <label for="inputName">Basvuru Aciklama</label>
+                                    <h:inputText styleClass="form-control" value="#{basvuruController.basvuru.aciklama}"/> <br/>
+                                <label for="inputName">Kisi</label>
+                                <h:selectOneMenu styleClass="custom-select" value="#{basvuruController.basvuru.kisi}" converter="kisiConverter">
+                                    <f:selectItems value="#{kisiController.getaList()}" var="kisi" itemValue="#{kisi}" itemLabel="#{kisi.kullaniciAdi}"/>
+                                </h:selectOneMenu>
+                                    </div>
+                                <div class="form-group">
+                                    <h:commandButton styleClass="btn btn-primary" rendered="#{basvuruController.basvuru.id!=0}" value="Update" action="#{basvuruController.update}">
+                                        <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+
+                                    <h:commandButton styleClass="btn btn-primary" rendered="#{basvuruController.basvuru.id==0}" value="Create" action="#{basvuruController.create}">  
+                                            <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+
+                                    <h:commandButton styleClass="btn btn-secondary" rendered="#{basvuruController.basvuru.id!=0}" value="Clear" action="#{basvuruController.clearForm}">  
+                                        <f:ajax execute="ajax-form" render="template-form"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:form>
+                        </div>
+
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>
+
